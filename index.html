@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Measurement Logger</title>
+</head>
+<body style="font-family:sans-serif;padding:20px">
+  <h2>Enter Measurements</h2>
+  <label>Applicator #:<br>
+    <select id="applicator">
+      <option value="">-- Select Applicator --</option>
+      <option value="1">Applicator 1</option>
+      <option value="2">Applicator 2</option>
+      <option value="3">Applicator 3</option>
+      <option value="4">Applicator 4</option>
+      <option value="5">Applicator 5</option>
+      <option value="6">Applicator 6</option>
+    </select><br><br>
+  </label>
+  <div id="measurements">
+    <label>M1: <input type="number" id="m1" oninput="updateAverage()"></label><br>
+    <label>M2: <input type="number" id="m2" oninput="updateAverage()"></label><br>
+    <label>M3: <input type="number" id="m3" oninput="updateAverage()"></label><br>
+    <label>M4: <input type="number" id="m4" oninput="updateAverage()"></label><br>
+    <label>M5: <input type="number" id="m5" oninput="updateAverage()"></label><br>
+    <label>M6: <input type="number" id="m6" oninput="updateAverage()"></label><br><br>
+  </div>
+  <p><strong>Average:</strong> <span id="averageDisplay">--</span></p>
+  <button onclick="prepareToSubmit()">Submit</button>
+  <button id="confirmBtn" style="display:none;" onclick="submitData()">Confirm Submit</button>
+  <p id="result"></p>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyUzGddy3ibxzo2-PUzBePQWcwNMqmI1Fb_0_QyCppCR5fKewidiXDAjv7s5QgkHPWl/exec';
+
+    function updateAverage() {
+      const values = [];
+      for (let i = 1; i <= 6; i++) {
+        const val = parseFloat(document.getElementById('m' + i).value);
+        if (!isNaN(val)) values.push(val);
+      }
+      if (values.length === 6) {
+        const nonEmpty = values.filter(v => !isNaN(v));
+        const avg = nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length;
+        document.getElementById('averageDisplay').textContent = avg.toFixed(2);
+      } else {
+        document.getElementById('averageDisplay').textContent = "--";
+      }
+    }
+
+    function prepareToSubmit() {
+      const applicator = document.getElementById('applicator').value;
+      const values = [];
+      for (let i = 1; i <= 6; i++) {
+        values.push(parseFloat(document.getElementById('m' + i).value));
+      }
+
+      if (!applicator || values.some(isNaN)) {
+        document.getElementById('result').textContent = "Please fill in all fields.";
+        return;
+      }
+
+      document.getElementById('result').textContent = "Check values. Click confirm within 3 seconds...";
+      document.getElementById('confirmBtn').style.display = "inline";
+      setTimeout(() => {
+        document.getElementById('confirmBtn').style.display = "none";
+        document.getElementById('applicator').value = "";
+        for (let i = 1; i <= 6; i++) {
+          document.getElementById('m' + i).value = "";
+        }
+        document.getElementById('averageDisplay').textContent = "--";
+        document.getElementById('result').textContent = "Submit canceled. Please try again.";
+      }, 3000);
+    }
+
+    function submitData() {
+      const applicator = document.getElementById('applicator').value;
+      const values = [];
+      for (let i = 1; i <= 6; i++) {
+        values.push(parseFloat(document.getElementById('m' + i).value));
+      }
+      const nonEmpty = values.filter(v => !isNaN(v));
+      const avg = nonEmpty.reduce((a, b) => a + b, 0) / nonEmpty.length;
+
+      const data = new URLSearchParams();
+      data.append("applicator", applicator);
+      for (let i = 0; i < 6; i++) {
+        data.append("m" + (i + 1), values[i]);
+      }
+      data.append("average", avg);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.text())
+      .then(text => {
+        document.getElementById('result').textContent = `Submitted successfully. Avg: ${avg.toFixed(2)}`;
+        document.getElementById('confirmBtn').style.display = "none";
+        document.getElementById('applicator').value = "";
+        for (let i = 1; i <= 6; i++) {
+          document.getElementById('m' + i).value = "";
+        }
+        document.getElementById('averageDisplay').textContent = "--";
+      })
+      .catch(error => {
+        document.getElementById('result').textContent = 'Error submitting data.';
+        console.error('Error:', error);
+      });
+    }
+  </script>
+</body>
+</html>
