@@ -1,1 +1,52 @@
-<!DOCTYPE html><html><head><title>Cal Flats Logger</title></head><body><h2>Cal Flats Logger Form</h2></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Measurement Logger - Cal Flats</title>
+</head>
+<body>
+  <h2>Cal Flats Logger</h2>
+  <form id="logger-form">
+    Applicator:
+    <select id="applicator" name="applicator">
+      <option value="">-- Select --</option>
+      <option value="1">Applicator 1</option>
+      <option value="2">Applicator 2</option>
+    </select><br><br>
+
+    M1: <input type="text" name="m1"><br>
+    M2: <input type="text" name="m2"><br>
+    M3: <input type="text" name="m3"><br>
+    M4: <input type="text" name="m4"><br>
+    M5: <input type="text" name="m5"><br>
+    M6: <input type="text" name="m6"><br><br>
+
+    Notes:<br>
+    <textarea name="notes" rows="4" cols="40"></textarea><br><br>
+
+    <button type="submit">Submit</button>
+    <div id="response"></div>
+  </form>
+
+  <script>
+    const form = document.getElementById('logger-form');
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwaKtkn2mP_fPPxx-2ZJ3VfNc7DtPyJici15Vn3lvEbpzUI5xcIlj2Gfxp_ym9pyMxAnw/exec';
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(form);
+      fetch(scriptURL, {
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.text())
+      .then(result => {
+        document.getElementById('response').innerText = result;
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Error!', error.message);
+      });
+    });
+  </script>
+</body>
+</html>
