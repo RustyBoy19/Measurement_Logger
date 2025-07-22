@@ -1,40 +1,39 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pellucere Logger Access</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Measurement Logger Dashboard</title>
   <style>
     body {
       font-family: sans-serif;
+      background-color: #fff8c4;
       text-align: center;
-      padding: 50px;
-      background-color: #f0f8ff;
+      padding: 40px;
     }
     h1 {
-      margin-bottom: 40px;
+      color: #444;
     }
-    .link-button {
-      display: block;
-      width: 80%;
-      max-width: 300px;
+    .link-card {
+      background-color: #fff176;
+      border-radius: 12px;
+      padding: 20px;
       margin: 20px auto;
-      padding: 15px;
-      font-size: 1.2em;
+      max-width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       text-decoration: none;
-      color: white;
-      background-color: #007BFF;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      color: black;
+      display: block;
+      font-size: 1.2em;
+      font-weight: bold;
     }
-    .link-button:hover {
-      background-color: #0056b3;
+    .link-card:hover {
+      background-color: #ffe54c;
     }
   </style>
 </head>
 <body>
-  <h1>Select Site to Log Measurements</h1>
-  <a class="link-button" href="measurement_logger_mtsignal.html">Mt Signal</a>
-  <a class="link-button" href="measurement_logger_calflats_styled.html">Cal Flats</a>
+  <h1>Measurement Logger</h1>
+  <a class="link-card" href="measurement_logger_calflats_styled.html">Cal Flats Logger</a>
+  <a class="link-card" href="measurement_logger_mtsignal.html">Mt Signal Logger</a>
 </body>
 </html>
